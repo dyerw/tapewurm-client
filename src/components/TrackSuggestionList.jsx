@@ -6,7 +6,8 @@ export class TrackSuggestionList extends React.Component {
     let items = this.props.suggestions.map(suggestion => {
       return <TrackSuggestionItem albumImageUrl={suggestion.albumImageUrl}
                                   trackName={suggestion.trackName}
-                                  artistName={suggestion.artistName} />
+                                  artistName={suggestion.artistName}
+                                  handleClick={this.props.onClickHandler} />
     });
 
     return (

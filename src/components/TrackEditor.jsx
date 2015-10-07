@@ -7,29 +7,51 @@ export class TrackEditor extends React.Component {
     super();
 
     this.state = {
-      trackSuggestions: []
+      trackSuggestions: [],
+      selectedTrack: null
     };
 
     // Bind instance functions
     this.titleUpdated = this.titleUpdated.bind(this);
     this.noteUpdated = this.noteUpdated.bind(this);
     this.updateSuggestionsForTrack = this.updateSuggestionsForTrack.bind(this);
+    this.updateSelectedTrack = this.updateSelectedTrack.bind(this);
   }
 
   render() {
-    return (
-      <div className="track-editor">
+    // If a track has been selected we don't show an input box
+    let trackTitleDiv;
+    if (this.state.selectedTrack != null) {
+      trackTitleDiv = (
+        <div>
+          <div>{this.state.selectedTrack.trackName}</div>
+          <div>{this.state.selectedTrack.albumName}</div>
+        </div>
+      );
+    } else {
+      trackTitleDiv = (
         <div className="track-upper-row">
           <span className="track-order">{this.props.order}</span>
-          <input type="text" placeholder="Enter track name" value={this.props.title}
-                 onChange={this.titleUpdated} />
+          <input type="text" placeholder="Enter track name"
+                 value={this.props.title}
+                 onChange={this.titleUpdated}/>
         </div>
+      );
+    }
+
+    return (
+      <div className="track-editor">
+
+        {trackTitleDiv}
+
+        {/* Note */}
         <div className="track-bottom-row">
           <input type="text" placeholder="Enter note" value={this.props.note}
                  onChange={this.noteUpdated} />
         </div>
 
-        <TrackSuggestionList suggestions={this.state.trackSuggestions} />
+        <TrackSuggestionList suggestions={this.state.trackSuggestions}
+               onClickHandler={this.updateSelectedTrack} />
       </div>
     );
   }
@@ -39,7 +61,6 @@ export class TrackEditor extends React.Component {
   }
 
   titleUpdated(e) {
-    //TODO: Autocomplete using last.fm data
     this.props.updateFunction(this.props.order, 'title', e.target.value);
     this.updateSuggestionsForTrack(e.target.value);
   }
@@ -74,5 +95,9 @@ export class TrackEditor extends React.Component {
                artistName: artistName,
                trackName: item.name}
      }).slice(0, 3);
+   }
+
+   updateSelectedTrack(data) {
+     this.setState({selectedTrack: data, trackSuggestions: []});
    }
 }
