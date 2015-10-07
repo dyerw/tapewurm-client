@@ -6,6 +6,9 @@ export class TrackEditor extends React.Component {
   constructor() {
     super();
 
+    // Used to debounce network requests
+    this.suggestionTimeout;
+
     this.state = {
       trackSuggestions: [],
       selectedTrack: null
@@ -72,9 +75,12 @@ export class TrackEditor extends React.Component {
     if (title == "") {
       this.setState({trackSuggestions: []});
     } else {
-      getSpotifyTrackSuggestions(title,
-        data => this.setState({trackSuggestions: this.parseSuggestions(data)}),
-        err => console.log(err));
+      clearTimeout(this.suggestionTimeout);
+      this.suggestionTimeout = setTimeout(() => {
+        getSpotifyTrackSuggestions(title,
+          data => this.setState({trackSuggestions: this.parseSuggestions(data)}),
+          err => console.log(err));
+      }, 1000);
     }
   }
 
