@@ -72,10 +72,12 @@ export class TrackEditor extends React.Component {
    * Fetches track suggestions for user
    */
   updateSuggestionsForTrack(title) {
+    // Cancel previous network request
+    clearTimeout(this.suggestionTimeout);
+
     if (title == "") {
       this.setState({trackSuggestions: []});
     } else {
-      clearTimeout(this.suggestionTimeout);
       this.suggestionTimeout = setTimeout(() => {
         getSpotifyTrackSuggestions(title,
           data => this.setState({trackSuggestions: this.parseSuggestions(data)}),
